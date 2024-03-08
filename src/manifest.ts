@@ -13,14 +13,6 @@ export async function getManifest() {
     name: pkg.displayName || pkg.name,
     version: pkg.version,
     description: pkg.description,
-    action: {
-      default_icon: './assets/icon-512.png',
-      default_popup: './dist/popup/index.html',
-    },
-    options_ui: {
-      page: './dist/options/index.html',
-      open_in_tab: true,
-    },
     background: isFirefox
       ? {
           scripts: ['dist/background/index.mjs'],
@@ -37,13 +29,15 @@ export async function getManifest() {
     permissions: [
       'tabs',
       'storage',
+      'webRequest',
       'activeTab',
+      'clipboardRead',
     ],
-    host_permissions: ['*://*/*'],
+    host_permissions: ['https://*.fedml.ai/*', 'https://fedml.ai/*', 'http://localhost/*'],
     content_scripts: [
       {
         matches: [
-          '<all_urls>',
+          'https://*.fedml.ai/*', 'https://fedml.ai/*', 'http://localhost/*',
         ],
         js: [
           'dist/contentScripts/index.global.js',
@@ -53,7 +47,9 @@ export async function getManifest() {
     web_accessible_resources: [
       {
         resources: ['dist/contentScripts/style.css'],
-        matches: ['<all_urls>'],
+        matches: [
+          'https://*.fedml.ai/*', 'https://fedml.ai/*', 'http://localhost/*',
+        ],
       },
     ],
     content_security_policy: {
